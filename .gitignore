@@ -1,0 +1,22 @@
+.*.swp
+*.tmp
+# Compiled files
+*.tfstate
+*.tfstate.*.backup
+*.tfstate.backup
+brasileirao/data/*
+
+# Terraform planning files
+*.out
+
+# Module directory
+.terraform/
+
+# Variable values for development
+*.tfvars
+!terraform.tfvars
+!*.auto.tfvars
+
+*.DS_Store
+
+more/
