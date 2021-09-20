@@ -7,6 +7,7 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--file", help="file path")
+parser.add_argument("--rosters", help="rosters file path")
 parser.add_argument("--option", help="options: draft, players, player", default="player")
 parser.add_argument("--player_id", help="player_id", default="null")
 parser.add_argument("--output", help="outputs: csv", default="csv")
@@ -73,8 +74,20 @@ def print_users(data, output):
             print(str(args.league_id) + "_" + str(item['user_id']) + ";" + str(item['league_id']) + ";"  + str(item['user_id']) + ";" + str(item['display_name']) + ";NA")
 
 def print_matchups(data, output):
-    for item in data:
-        print(str(args.week) + ";" + str(args.league_id) + "_" + str(item['roster_id']) + ";" + str(args.league_id) + ";" + str(item['roster_id'])  + ";" + str(item['matchup_id']) + ";" + str(item['points']))
+    try:
+        with open(args.rosters) as rosters_file:
+            rosters = json.load(rosters_file)
+            for item in data:
+                for roster in rosters:
+                    if roster['roster_id'] == item['roster_id']:
+                        wins = str(roster['settings']['wins'])
+                        loses = str(roster['settings']['losses'])
+                        ties = str(roster['settings']['ties'])
+                        points = str(roster['settings']['fpts'])
+                        owner = str(roster['owner_id'])
+                print(str(args.week) + ";" + str(args.league_id) + ";" + str(item['roster_id']) + ";" + owner  + ";" + str(item['matchup_id']) + ";" + str(item['points']) + ";" + wins + ";" + loses + ";" + ties + ";" + points)
+    except Exception as e:
+        print(str(e))
 
 def print_teams_data(data, output):
     for item in data:
