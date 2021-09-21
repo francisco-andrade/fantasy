@@ -5,6 +5,7 @@
 *.tfstate.*.backup
 *.tfstate.backup
 brasileirao/data/*
+myleagues/data/*
 
 # Terraform planning files
 *.out
