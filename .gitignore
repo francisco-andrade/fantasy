@@ -6,6 +6,7 @@
 *.tfstate.backup
 brasileirao/data/*
 myleagues/data/*
+myleagues/templates/*.xcf
 
 # Terraform planning files
 *.out
