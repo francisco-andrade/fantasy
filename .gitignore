@@ -7,6 +7,7 @@
 brasileirao/data/*
 myleagues/data/*
 myleagues/templates/*.xcf
+myleagues/powerrankings/*.png
 
 # Terraform planning files
 *.out
