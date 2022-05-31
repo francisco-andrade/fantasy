@@ -1,0 +1,120 @@
+# https://docs.sleeper.app/
+# With shell, you can just curl the username or user_id
+curl "https://api.sleeper.app/v1/user/<username>"
+curl "https://api.sleeper.app/v1/user/<user_id>"
+# You will get a JSON response that looks something like this:
+{
+  "username": "sleeperuser",
+  "user_id": "12345678",
+  "display_name": "SleeperUser",
+  "avatar": "cc12ec49965eb7856f84d71cf85306af"
+}
+
+## get leagues
+curl "https://api.sleeper.app/v1/user/434382654784139264/leagues/nfl/2020"
+
+## get league details
+# D# Keepers
+curl "https://api.sleeper.app/v1/league/574364229538680832"
+# Roger Goodell
+curl "https://api.sleeper.app/v1/league/575672209101139968"
+# La Liga
+curl "https://api.sleeper.app/v1/league/574000575964033024"
+# Calvin Johnson
+curl "https://api.sleeper.app/v1/league/553060618266603520"
+# NCAAA
+curl "https://api.sleeper.app/v1/league/553060618266603520"
+# Fake
+curl "https://api.sleeper.app/v1/league/553060618266603520"
+
+## Get all drafts for a league
+# D# Keepers
+curl "https://api.sleeper.app/v1/league/574364229538680832/drafts"
+# Madden
+curl "https://api.sleeper.app/v1/league/650155316608061440/drafts"
+# Roger Goodell
+curl "https://api.sleeper.app/v1/league/575672209101139968/drafts"
+# La Liga
+curl "https://api.sleeper.app/v1/league/574000575964033024/drafts"
+# Calvin Johnson
+curl "https://api.sleeper.app/v1/league/553060618266603520/drafts"
+# NCAA
+curl "https://api.sleeper.app/v1/league/553060618266603520/drafts"
+# Fake
+curl "https://api.sleeper.app/v1/league/553060618266603520/drafts"
+# IDP2 N2 B.Martinez Br.FSB
+curl "https://api.sleeper.app/v1/league/705622575195168768/drafts"
+# SF7 N4 R.White Br.FSB
+curl 
+# NCAA
+curl "https://api.sleeper.app/v1/league/786609342420996096/drafts"
+# Calvin Johnson
+curl "https://api.sleeper.app/v1/league/827718472812326912/drafts"
+
+
+
+### Get all picks in a draft
+## 2020
+# D# Keepers
+curl "https://api.sleeper.app/v1/draft/574364230723964928/picks" > draft_2020_dfence.json
+# Madden
+curl "https://api.sleeper.app/v1/draft/650155316608061441/picks" > draft_2020_madden.json
+# Roger Goodell
+curl "https://api.sleeper.app/v1/draft/575895245284306944/picks" > draft_2020_goodell.json
+# La Liga
+curl "https://api.sleeper.app/v1/draft/574090634864951296/picks" > draft_2020_laliga.json
+# Calvin Johson
+curl "https://api.sleeper.app/v1/draft/553060619674136576/picks" > draft_2020_calvinjohnson.json
+# NCAA
+curl "https://api.sleeper.app/v1/draft/577921502943416320/picks" > draft_2020_ncaa.json
+# Fake
+curl "https://api.sleeper.app/v1/draft/573221698631860224/picks" > draft_2020_fake.json
+# 2022
+# NCAA
+curl "https://api.sleeper.app/v1/draft/786609342420996097/picks" > draft_2022_ncaa.json
+# Calvin Johnson
+curl "https://api.sleeper.app/v1/draft/827718472812326913/picks" > draft_2022_calvinjohnson.json
+# AFCNFC32
+curl "https://api.sleeper.app/v1/draft/787133946340167681/picks" > draft_2022_afcnfc32.json
+
+### Rosters
+# Get all rosters in a league
+GET https://api.sleeper.app/v1/league/<league_id>/rosters
+
+### Matchups
+# Get all matchups in a week
+GET https://api.sleeper.app/v1/league/<league_id>/matchups/<week>
+# IDP2 N2 B.Martinez Br.FSB
+curl  https://api.sleeper.app/v1/league/705622575195168768/matchups/1 > matchups_705622575195168768_week1.json
+# SF7 N4 R.White Br.FSB
+curl  https://api.sleeper.app/v1/league/709932171657297920/matchups/1 > matchups_709932171657297920_week1.json
+
+### Playoff bracket
+GET https://api.sleeper.app/v1/league/<league_id>/winners_bracket
+GET https://api.sleeper.app/v1/league/<league_id>/loses_bracket
+
+
+
+## get league rosters
+# D# Keepers
+curl "https://api.sleeper.app/v1/league/574364229538680832/rosters"
+# Roger Goodell
+curl "https://api.sleeper.app/v1/league/575672209101139968/rosters"
+# La Liga
+curl "https://api.sleeper.app/v1/league/574000575964033024/rosters"
+# Calvin Johnson
+curl "https://api.sleeper.app/v1/league/553060618266603520/rosters"
+# NCAAA
+curl "https://api.sleeper.app/v1/league/553060618266603520/rosters"
+# Fake
+curl "https://api.sleeper.app/v1/league/553060618266603520/rosters"
+# IDP2 N2 B.Martinez Br.FSB
+curl  https://api.sleeper.app/v1/league/705622575195168768/rosters > rosters_705622575195168768.json
+
+
+# Get User leagues
+curl https://api.sleeper.app/v1/user/316601831939657728/leagues/nfl/2021 > 316601831939657728_leagues.json
+
+
+## get transactions
+curl https://api.sleeper.app/v1/league/574364229538680832/transactions/0
