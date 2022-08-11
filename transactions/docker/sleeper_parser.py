@@ -46,6 +46,7 @@ def print_transactions(data, rosters, users, players):
                         # Player doesnt exist!? ID 8368
                         if str(adds_key) in players:
                             adds_player_name = players.get(str(adds_key))['first_name'] + " " + players.get(str(adds_key))['last_name']
+                            adds_positions = ""
                             for adds_position in players.get(str(adds_key))['fantasy_positions']:
                                 adds_positions += str(adds_position) + "/"
                         bid = "0"
@@ -66,6 +67,7 @@ def print_transactions(data, rosters, users, players):
                         drops_positions = "Unknown"
                         if str(drops_key) in players:
                             drops_player_name = players.get(str(drops_key))['first_name'] + " " + players.get(str(drops_key))['last_name']
+                            drops_positions = ""
                             for drops_position in players.get(str(drops_key))['fantasy_positions']:
                                 drops_positions += str(drops_position) + "/"
                         bid = "0"
