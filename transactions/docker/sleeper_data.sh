@@ -25,8 +25,6 @@ if [[ -z $LEAGUE ]] && [[ ! -e $LEAGUES_FILE ]]; then
   exit 1
 fi
 
-echo "Starting script"
-
 cd $FOLDER
 
 if [[ $OPTION == "transactions" ]]; then
@@ -35,59 +33,45 @@ if [[ $OPTION == "transactions" ]]; then
     while read LEAGUE_ID; do
         PLAYERS_FILENAME=./data/transactions/players
         if [[ ! -e ${PLAYERS_FILENAME}.json ]]; then
-            echo "Getting all players..."
             curl https://api.sleeper.app/v1/players/nfl -s > ${PLAYERS_FILENAME}.json
         fi
         ROSTERS_FILENAME=./data/transactions/${LEAGUE_ID}_rosters
         if [[ ! -e ${ROSTERS_FILENAME}.json ]]; then
-            echo "Getting League $LEAGUE_ID rosters..."
             curl https://api.sleeper.app/v1/league/${LEAGUE_ID}/rosters -s > ${ROSTERS_FILENAME}.json
         fi
         USERS_FILENAME=./data/transactions/${LEAGUE_ID}_users
         if [[ ! -e ${USERS_FILENAME}.json ]]; then
-            echo "Getting League $LEAGUE_ID rosters..."
             curl https://api.sleeper.app/v1/league/${LEAGUE_ID}/users -s > ${USERS_FILENAME}.json
         fi
         TRANSACTIONS_FILENAME=./data/transactions/${LEAGUE_ID}_transactions_week${WEEK}
         if [[ ! -e ${TRANSACTIONS_FILENAME}.json ]]; then
-            echo "Getting League $LEAGUE_ID transactions..."
             curl https://api.sleeper.app/v1/league/${LEAGUE_ID}/transactions/${WEEK} -s > ${TRANSACTIONS_FILENAME}.json
         fi
-        echo "Converting League $LEAGUE_ID transactions"
         python ./sleeper_parser.py --file ${TRANSACTIONS_FILENAME}.json --rosters ${ROSTERS_FILENAME}.json --users ${USERS_FILENAME}.json --players ${PLAYERS_FILENAME}.json --option transactions --league_id $LEAGUE_ID >> ./data/transactions.csv
-        echo "Transactions CSV: ./data/transactions.csv"
     done < "$LEAGUES_FILE"
   else
     LEAGUE_ID=$LEAGUE
     PLAYERS_FILENAME=./data/players
     if [[ ! -e ${PLAYERS_FILENAME}.json ]]; then
-        echo "Getting all players..."
         curl https://api.sleeper.app/v1/players/nfl -s > ${PLAYERS_FILENAME}.json
     fi
     ROSTERS_FILENAME=./data/transactions/${LEAGUE_ID}_rosters
     if [[ ! -e ${ROSTERS_FILENAME}.json ]]; then
-        echo "Getting League $LEAGUE_ID rosters..."
         curl https://api.sleeper.app/v1/league/${LEAGUE_ID}/rosters -s > ${ROSTERS_FILENAME}.json
     fi
     USERS_FILENAME=./data/transactions/${LEAGUE_ID}_users
     if [[ ! -e ${USERS_FILENAME}.json ]]; then
-        echo "Getting League $LEAGUE_ID rosters..."
         curl https://api.sleeper.app/v1/league/${LEAGUE_ID}/users -s > ${USERS_FILENAME}.json
     fi
     TRANSACTIONS_FILENAME=./data/transactions/${LEAGUE_ID}_transactions_week${WEEK}
     if [[ ! -e ${TRANSACTIONS_FILENAME}.json ]]; then
-        echo "Getting League $LEAGUE_ID transactions..."
         curl https://api.sleeper.app/v1/league/${LEAGUE_ID}/transactions/${WEEK} -s > ${TRANSACTIONS_FILENAME}.json
     fi
-    echo "Converting League $LEAGUE_ID transactions"
     python ./sleeper_parser.py --file ${TRANSACTIONS_FILENAME}.json --rosters ${ROSTERS_FILENAME}.json --users ${USERS_FILENAME}.json --players ${PLAYERS_FILENAME}.json --option transactions --league_id $LEAGUE_ID >> ./data/transactions.csv
-    echo "Transactions CSV: ./data/transactions.csv"
   fi
 
   cat ./data/transactions.csv | sort
   rm ./data/transactions.csv
 fi
-
-echo "Done"
 
 exit 0

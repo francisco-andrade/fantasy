@@ -17,7 +17,7 @@ parser.add_argument("--league_id", help="league_id", default="1")
 parser.add_argument("--week", help="week", default="1")
 args = parser.parse_args()
 
-def get_owner(data, roster_id):
+def get_owner_id(data, roster_id):
     for item in data:
         if str(roster_id) == str(item['roster_id']):
             return item['owner_id']
@@ -31,7 +31,7 @@ def get_user(data, user_id):
                 if 'team_name' in item['metadata']:
                     return item['metadata']['team_name']
                 else:
-                    return str(item['display_name'])
+                    return item['display_name']
 
 def print_transactions(data, rosters, users, players):
     try:
@@ -41,7 +41,13 @@ def print_transactions(data, rosters, users, players):
                 if bool(item['adds']):
                     for adds_key in item['adds'].keys():
                         adds_value = item['adds'][adds_key]
-                        adds_player_name = players.get(str(adds_key))['first_name'] + " " + players.get(str(adds_key))['last_name']
+                        adds_player_name = "Unknown"
+                        adds_positions = "Unknown"
+                        # Player doesnt exist!? ID 8368
+                        if str(adds_key) in players:
+                            adds_player_name = players.get(str(adds_key))['first_name'] + " " + players.get(str(adds_key))['last_name']
+                            for adds_position in players.get(str(adds_key))['fantasy_positions']:
+                                adds_positions += str(adds_position) + "/"
                         bid = "0"
                         if item['settings'] is None:
                             bid = "0"
@@ -50,19 +56,21 @@ def print_transactions(data, rosters, users, players):
                                 bid = item['settings']['waiver_bid']
                             else:
                                 bid = "0"
-                        adds_positions = ""
-                        for adds_position in players.get(str(adds_key))['fantasy_positions']:
-                            adds_positions += str(adds_position) + "/"
-                        print(time.strftime("%y/%m/%d %H:%M:%S", time.localtime(item['created']/1000)) + ";" + str(args.league_id) + ";add;" + str(item['type']) + ";" + str(item['status']) + ";" + get_user(users, get_owner(rosters, adds_value)) + ";" + adds_player_name + ";" + adds_positions[:-1] + ";" + str(bid))
+                        team_name = get_user(users, get_owner_id(rosters, adds_value))
+                        print(time.strftime("%y/%m/%d %H:%M:%S", time.localtime(item['created']/1000)) + ";" + str(args.league_id) + ";add;" + str(item['type']) + ";" + str(item['status']) + ";" + team_name.encode('utf-8').strip() + ";" + adds_player_name.encode('utf-8').strip() + ";" + adds_positions[:-1] + ";" + str(bid))
                 if bool(item['drops']):
                     for drops_key in item['drops'].keys():
                         drops_value = item['drops'][drops_key]
-                        drops_player_name = players.get(str(drops_key))['first_name'] + " " + players.get(str(drops_key))['last_name']
+                        # Player doesnt exist!? ID 8368
+                        drops_player_name = "Unknown"
+                        drops_positions = "Unknown"
+                        if str(drops_key) in players:
+                            drops_player_name = players.get(str(drops_key))['first_name'] + " " + players.get(str(drops_key))['last_name']
+                            for drops_position in players.get(str(drops_key))['fantasy_positions']:
+                                drops_positions += str(drops_position) + "/"
                         bid = "0"
-                        drops_positions = ""
-                        for drops_position in players.get(str(drops_key))['fantasy_positions']:
-                            drops_positions += str(drops_position) + "/"                        
-                        print(time.strftime("%y/%m/%d %H:%M:%S", time.localtime(item['created']/1000)) + ";" + str(args.league_id) + ";drop;" + str(item['type']) + ";" + str(item['status']) + ";" + get_user(users, get_owner(rosters, drops_value)) + ";" + drops_player_name + ";" + drops_positions[:-1] + ";" + bid)
+                        team_name = get_user(users, get_owner_id(rosters, drops_value))
+                        print(time.strftime("%y/%m/%d %H:%M:%S", time.localtime(item['created']/1000)) + ";" + str(args.league_id) + ";drop;" + str(item['type']) + ";" + str(item['status']) + ";" + team_name.encode('utf-8').strip() + ";" + drops_player_name.encode('utf-8').strip() + ";" + drops_positions[:-1] + ";" + bid)
     except Exception as e:
         raise
 
