@@ -1,3 +1,15 @@
+# sleeper-transactions
+Sleeper data to csv container
+
+## Docker build command
+`docker build -t franciscoandrade/sleeper-pr -f Dockerfile .`
+
+## Docker run example
+`docker run -ti --name sleeper-data -ti --rm --net=host franciscoandrade/sleeper-pr -o power -w 17`
+
+## Docker run example with ssh bash
+`docker run -ti --entrypoint bash --name sleeper-data -v /tmp/docker:/tmp/data/ -ti --rm --net=host franciscoandrade/sleeper-pr`
+
 Comandos:
 ```
 # Gerar power ranking semanal

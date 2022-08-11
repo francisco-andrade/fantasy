@@ -31,7 +31,8 @@ def print_players(data, output):
     for item in data:
         player_data = data[item]
         try:
-            position = str(player_data['position'])
+            #position = str(player_data['position'])
+            position = str(player_data['fantasy_positions'])
             player_id = str(player_data['player_id'])
             full_name = str(player_data['first_name']) + " " + str(player_data['last_name'])
             team = check_value(player_data, 'team', 'None')
