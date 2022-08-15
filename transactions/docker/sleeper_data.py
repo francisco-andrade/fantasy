@@ -1,20 +1,18 @@
 #!/usr/bin/python
-# python ./sleeper_converter.py --option players --file file.json --output csv
+# python ./sleeper_data.py --league_id 840062462177955840 --week 1
 from __future__ import division
 import sys
 import json
 import argparse
 import time
+import time
+import urllib2
+from os.path import exists
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--file", help="transactions file path")
-parser.add_argument("--rosters", help="rosters file path")
-parser.add_argument("--users", help="users file path")
-parser.add_argument("--players", help="players file path")
-parser.add_argument("--option", help="options: transactions", default="transactions")
-parser.add_argument("--output", help="outputs: csv", default="csv")
 parser.add_argument("--league_id", help="league_id", default="1")
 parser.add_argument("--week", help="week", default="1")
+parser.add_argument("--debug", help="debug", default="false")
 args = parser.parse_args()
 
 def get_owner_id(data, roster_id):
@@ -76,16 +74,74 @@ def print_transactions(data, rosters, users, players):
     except Exception as e:
         raise
 
+
+filename_prefix = "./data/transactions_rosters_" + args.league_id + "_" + args.week
+
+# Players
+players_file_path = "./data/players.json"
+players_file_exists = exists(players_file_path)
+if players_file_exists:
+    if args.debug == "true":
+        print("Skipping players")
+else:
+    if args.debug == "true":
+        print("Getting players")
+    players_file = open(players_file_path, "w")
+    players_contents = urllib2.urlopen("https://api.sleeper.app/v1/players/nfl").read()
+    players_file.write(str(players_contents))
+    players_file.close()
+
+# Rosters
+rosters_file_path = filename_prefix + "_rosters.json"
+rosters_file_exists = exists(rosters_file_path)
+if rosters_file_exists:
+    if args.debug == "true":
+        print("Skipping rosters")
+else:
+    if args.debug == "true":
+        print("Getting rosters")
+    rosters_file = open(rosters_file_path, "w")
+    rosters_contents = urllib2.urlopen("https://api.sleeper.app/v1/league/" + args.league_id + "/rosters").read()
+    rosters_file.write(str(rosters_contents))
+    rosters_file.close()
+
+# Users
+users_file_path = filename_prefix + "_users.json"
+users_file_exists = exists(users_file_path)
+if users_file_exists:
+    if args.debug == "true":
+        print("Skipping users")
+else:
+    if args.debug == "true":
+        print("Getting users")
+    users_file = open(users_file_path, "w")
+    users_contents = urllib2.urlopen("https://api.sleeper.app/v1/league/" + args.league_id + "/users").read()
+    users_file.write(str(users_contents))
+    users_file.close()
+
+# Transactions
+transactions_file_path = filename_prefix + "_transactions.json"
+transactions_file_exists = exists(transactions_file_path)
+if transactions_file_exists:
+    if args.debug == "true":
+        print("Skipping transactions")
+else:
+    if args.debug == "true":
+        print("Getting transactions")
+    transactions_file = open(transactions_file_path, "w")
+    transactions_contents = urllib2.urlopen("https://api.sleeper.app/v1/league/" + args.league_id + "/transactions/" + args.week).read()
+    transactions_file.write(str(transactions_contents))
+    transactions_file.close()
+
 try:
-    with open(args.file) as transactions_file:
+    with open(transactions_file_path) as transactions_file:
         data = json.load(transactions_file)
-        if args.option == "transactions":
-            with open(args.players) as players_file:
-                players = json.load(players_file)
-                with open(args.rosters) as rosters_file:
-                    rosters = json.load(rosters_file)
-                    with open(args.users) as users_file:
-                        users = json.load(users_file)
-                        print_transactions(data, rosters, users, players)
+        with open(players_file_path) as players_file:
+            players = json.load(players_file)
+            with open(rosters_file_path) as rosters_file:
+                rosters = json.load(rosters_file)
+                with open(users_file_path) as users_file:
+                    users = json.load(users_file)
+                    print_transactions(data, rosters, users, players)
 except Exception as e:
     print(str(e))
