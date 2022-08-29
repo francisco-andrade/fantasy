@@ -2,7 +2,7 @@
 
 ABSPATH=$(cd "$(dirname "$0")"; pwd)
 
-while getopts ":n:d:y:" opt; do
+while getopts ":n:d:y:s:" opt; do
   case $opt in
     n) LEAGUE_NAME="$OPTARG"
     ;;
@@ -10,10 +10,14 @@ while getopts ":n:d:y:" opt; do
     ;;
     y) YEAR="$OPTARG"
     ;;
+    s) SKIP_WEEKS="$OPTARG"
+    ;;
     \?) echo "Invalid option $OPTARG" >&2
     ;;
   esac
 done
+
+: "${SKIP_WEEKS:=0}"
 
 echo "Starting script"
 cd $ABSPATH
@@ -26,7 +30,7 @@ if [[ -n $DRAFT_ID ]]; then
 fi
 
 if [[ ! -e ./data/draft_${YEAR}_${LEAGUE_NAME}.csv ]]; then
-  python ./sleeper_parser.py --file ./data/draft_${YEAR}_${LEAGUE_NAME}.json --option draft --league_name ${LEAGUE_NAME} >> ./data/draft_${YEAR}_${LEAGUE_NAME}.csv
+  python ./sleeper_parser.py --file ./data/draft_${YEAR}_${LEAGUE_NAME}.json --option draft --league_name ${LEAGUE_NAME} >> ./data/draft_${YEAR}_${LEAGUE_NAME}.csv --skip_weeks "$SKIP_WEEKS"
 fi
 
 cat ./data/draft_${YEAR}_${LEAGUE_NAME}.csv

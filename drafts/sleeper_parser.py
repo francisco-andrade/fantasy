@@ -14,6 +14,7 @@ parser.add_argument("--output", help="outputs: csv", default="csv")
 parser.add_argument("--league_id", help="league_id", default="0")
 parser.add_argument("--league_name", help="league_id", default="NA")
 parser.add_argument("--week", help="week", default="1")
+parser.add_argument("--skip_weeks", help="skeep_weeks", default="0")
 args = parser.parse_args()
 
 def print_player(data, player_id, output):
@@ -47,12 +48,14 @@ def print_players(data, output):
             print("error;player;" + player_id + "-;-;-")
 
 def print_draft(data, output):
+    skip_list = args.skip_weeks.split()
     if args.output == "json":
         print(json.dumps(data))
     else:
         for item in data:
             try:
-                print( str(args.league_name) + ";" + str(item['player_id']) + ";" + str(item['metadata']['first_name']) + " " + str(item['metadata']['last_name']) + ";" + str(item['round']) + ";" + str(item['pick_no']) + ";" + str(item['picked_by']) + ";" + str(item['metadata']['position']) + ";" + str(item['metadata']['team']))
+                if str(item['round']) not in skip_list:
+                    print( str(args.league_name) + ";" + str(item['player_id']) + ";" + str(item['metadata']['first_name']) + " " + str(item['metadata']['last_name']) + ";" + str(item['round']) + ";" + str(item['pick_no']) + ";" + str(item['picked_by']) + ";" + str(item['metadata']['position']) + ";" + str(item['metadata']['team']))
             except:
                 print("error;" + str(item))
 
