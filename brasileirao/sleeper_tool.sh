@@ -59,7 +59,7 @@ while read league; do
           curl  https://api.sleeper.app/v1/league/${league}/matchups/${WEEK} -s > ${FILENAME}.json
       fi
       echo "Converting League $league matchups"
-      python ./sleeper_parser.py --file ${FILENAME}.json --rosters ./data/rosters/${league}_rosters_week$WEEK.json --option matchups --league_id $league --week ${WEEK} >> ${OUTPUT_FOLDER}/data/matchups_week${WEEK}.csv
+      python ./sleeper_parser.py --file ${FILENAME}.json --rosters ${OUTPUT_FOLDER}/data/rosters/${league}_rosters_week$WEEK.json --option matchups --league_id $league --week ${WEEK} >> ${OUTPUT_FOLDER}/data/matchups_week${WEEK}.csv
       echo "Matchups CSV: ./data/matchups_week${WEEK}.csv"
     fi
 done < "$LEAGUES_FILE"
