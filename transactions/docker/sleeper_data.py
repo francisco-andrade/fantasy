@@ -5,7 +5,6 @@ import sys
 import json
 import argparse
 import time
-import time
 import urllib2
 from os.path import exists
 
