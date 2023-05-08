@@ -76,6 +76,13 @@ curl "https://api.sleeper.app/v1/draft/786609342420996097/picks" > draft_2022_nc
 curl "https://api.sleeper.app/v1/draft/827718472812326913/picks" > draft_2022_calvinjohnson.json
 # AFCNFC32
 curl "https://api.sleeper.app/v1/draft/787133946340167681/picks" > draft_2022_afcnfc32.json
+# 2023
+# NCAA
+curl "https://api.sleeper.app/v1/draft/942634208881643521/picks" > draft_2023_ncaa.json
+# Calvin Johnson
+curl "https://api.sleeper.app/v1/draft/827718472812326913/picks" > draft_2023_calvinjohnson.json
+# AFCNFC32
+curl "https://api.sleeper.app/v1/draft/787133946340167681/picks" > draft_2023_afcnfc32.json
 
 ### Rosters
 # Get all rosters in a league
