@@ -1,22 +1,22 @@
 #!/usr/bin/python
 # python ./sleeper_converter.py --option players --file file.json --output csv
-
+from __future__ import division
 import sys
 import json
 import argparse
+import urllib2
+import time
+from os.path import exists
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--file", help="file path")
-parser.add_argument("--rosters", help="rosters file path")
 parser.add_argument("--option", help="options: draft, players, player", default="player")
-parser.add_argument("--player_id", help="player_id", default="null")
 parser.add_argument("--output", help="outputs: csv", default="csv")
 parser.add_argument("--league_id", help="league_id", default="0")
 parser.add_argument("--week", help="week", default="1")
 args = parser.parse_args()
 
-def print_player(data, player_id, output):
-    print(json.dumps(data[player_id]))
+league_id = args.league_id
+week_number = args.week
 
 def check_value(data, key, default):
     try:
@@ -26,33 +26,6 @@ def check_value(data, key, default):
             return default
     except Exception:
         return default
-
-def print_players(data, output):
-    for item in data:
-        player_data = data[item]
-        try:
-            position = str(player_data['position'])
-            player_id = str(player_data['player_id'])
-            full_name = str(player_data['first_name']) + " " + str(player_data['last_name'])
-            team = check_value(player_data, 'team', 'None')
-            search_rank = check_value(player_data, 'search_rank', '9999999')
-            years_exp = check_value(player_data, 'years_exp', 'None')
-            age = check_value(player_data, 'age', 'None')
-            college = check_value(player_data, 'college', 'None')
-            years_exp = check_value(player_data, 'years_exp', 'None')
-            print(player_id + ";" + full_name + ";" + position + ";" + team + ";" + search_rank + ";" + age + ";" + college + ";" + years_exp)
-        except:
-            print("error;player;" + player_id + "-;-;-")
-
-def print_draft(data, output):
-    if args.output == "json":
-        print(json.dumps(data))
-    else:
-        for item in data:
-            try:
-                print( str(item['player_id']) + ";" + str(item['round']) + ";" + str(item['pick_no']) + ";" + str(item['picked_by']) + ";" + str(item['metadata']['position']) + ";" + str(item['metadata']['team']) + ";" + str(item['metadata']['first_name']) + " " + str(item['metadata']['last_name']) + ";" + str(item['metadata']['years_exp']))
-            except:
-                print("error;" + str(item))
 
 def print_rosters(data, output):
     for item in data:
@@ -64,18 +37,18 @@ def print_rosters(data, output):
 
 def print_roster_ids(data, output):
     for item in data:
-        print(str(args.league_id) + "_" + str(item['roster_id']) + ";" + str(args.league_id) + ";" + str(item['roster_id']) + ";" + str(item['owner_id']))
+        print(str(league_id) + "_" + str(item['roster_id']) + ";" + str(league_id) + ";" + str(item['roster_id']) + ";" + str(item['owner_id']))
 
 def print_users(data, output):
     for item in data:
         try:
-            print(str(args.league_id) + "_" + str(item['user_id']) + ";" + str(item['league_id']) + ";"  + str(item['user_id']) + ";" + str(item['display_name']) + ";" + str(item['metadata']['team_name']) )
+            print(str(league_id) + "_" + str(item['user_id']) + ";" + str(item['league_id']) + ";"  + str(item['user_id']) + ";" + str(item['display_name']) + ";" + str(item['metadata']['team_name']) )
         except:
-            print(str(args.league_id) + "_" + str(item['user_id']) + ";" + str(item['league_id']) + ";"  + str(item['user_id']) + ";" + str(item['display_name']) + ";NA")
+            print(str(league_id) + "_" + str(item['user_id']) + ";" + str(item['league_id']) + ";"  + str(item['user_id']) + ";" + str(item['display_name']) + ";NA")
 
 def print_matchups(data, output):
     try:
-        with open(args.rosters) as rosters_file:
+        with open(rosters_file_path) as rosters_file:
             rosters = json.load(rosters_file)
             for item in data:
                 for roster in rosters:
@@ -85,7 +58,7 @@ def print_matchups(data, output):
                         ties = str(roster['settings']['ties'])
                         points = str(roster['settings']['fpts'])
                         owner = str(roster['owner_id'])
-                print(str(args.week) + ";" + str(args.league_id) + ";" + str(item['roster_id']) + ";" + owner  + ";" + str(item['matchup_id']) + ";" + str(item['points']) + ";" + wins + ";" + loses + ";" + ties + ";" + points)
+                print(str(week_number) + ";" + str(league_id) + ";" + str(item['roster_id']) + ";" + owner  + ";" + str(item['matchup_id']) + ";" + str(item['points']) + ";" + wins + ";" + loses + ";" + ties + ";" + points)
     except Exception as e:
         print(str(e))
 
@@ -98,26 +71,71 @@ def print_leagues(data, output):
     for item in data:
         print(str(item['league_id']) + ";" + item['name'].encode('utf-8').strip())
 
+
+filename_prefix = "./data/matchups_" + league_id + "_" + week_number
+
+# Players
+players_file_path = "./data/players.json"
+def get_players():
+    players_file_exists = exists(players_file_path)
+    if not players_file_exists:
+        players_file = open(players_file_path, "w")
+        players_contents = urllib2.urlopen("https://api.sleeper.app/v1/players/nfl").read()
+        players_file.write(str(players_contents))
+        players_file.close()
+
+# Rosters
+def get_rosters(p_league_id):
+    rosters_file_exists = exists(rosters_file_path)
+    if not rosters_file_exists:
+        rosters_file = open(rosters_file_path, "w")
+        rosters_contents = urllib2.urlopen("https://api.sleeper.app/v1/league/" + p_league_id + "/rosters").read()
+        rosters_file.write(str(rosters_contents))
+        rosters_file.close()
+
+
+# Users
+def get_users(p_league_id):
+    users_file_exists = exists(users_file_path)
+    if not users_file_exists:
+        users_file = open(users_file_path, "w")
+        users_contents = urllib2.urlopen("https://api.sleeper.app/v1/league/" + p_league_id + "/users").read()
+        users_file.write(str(users_contents))
+        users_file.close()
+
+# Matchups
+def get_matchups(p_league_id, p_week_number):
+    matchups_file_exists = exists(matchups_file_path)
+    if not matchups_file_exists:
+        matchups_file = open(matchups_file_path, "w")
+        matchups_contents = urllib2.urlopen("https://api.sleeper.app/v1/league/" + p_league_id + "/matchups/" + p_week_number).read()
+        matchups_file.write(str(matchups_contents))
+        matchups_file.close()
+
+
+leagues_file = "./data/leagues_2022.txt"
 try:
-    with open(args.file) as json_file:
-        data = json.load(json_file)
-        if args.option == "draft":
-            print_draft(data, args.output)
-        elif args.option == "players":
-            print_players(data, args.output)
-        elif args.option == "player":
-            print_player(data, args.player_id, args.output)
-        elif args.option == "rosters":
-            print_rosters(data, args.output)
-        elif args.option == "teams":
-            print_teams_data(data, args.output)
-        elif args.option == "matchups":
-            print_matchups(data, args.output)
-        elif args.option == "roster-ids":
-            print_roster_ids(data, args.output)
-        elif args.option == "users":
-            print_users(data, args.output)
-        elif args.option == "leagues":
-            print_leagues(data, args.output)
+    with open(leagues_file) as league_file:
+        mylist = league_file.read().splitlines()
+        for row in mylist:
+            rosters_file_path = filename_prefix + "_rosters.json"
+            users_file_path = filename_prefix + "_users.json"
+            matchups_file_path = filename_prefix + "_matchups.json"
+            get_rosters(row)
+            get_users(row)
+            get_matchups(row, week_number)
+            league_id = row
+            if args.option == "roster-ids":
+                with open(rosters_file_path) as json_file:
+                    data = json.load(json_file)
+                    print_roster_ids(data, args.output)
+            if args.option == "users":
+                with open(users_file_path) as json_file:
+                    data = json.load(json_file)
+                    print_users(data, args.output)
+            if args.option == "matchups":
+                with open(matchups_file_path) as json_file:
+                    data = json.load(json_file)
+                    print_matchups(data, args.output)
 except Exception as e:
     print(str(e))

@@ -13,4 +13,5 @@ COPY data/leagues* /root/sleeper/data/
 WORKDIR "/root/sleeper/"
 
 # Configure default container command
-ENTRYPOINT ["/root/sleeper/sleeper_tool.sh"]
+# ./sleeper_parser.py --option matchups --league_id 870106348254326784 --week 1
+ENTRYPOINT ["/usr/bin/python"]
