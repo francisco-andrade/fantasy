@@ -102,7 +102,7 @@ def print_leagues(data, output):
 def print_power(data, output):
     for item in data:
         team_record = str("%02d" % ((item['settings']['wins']/(item['settings']['wins']+item['settings']['losses'])*100),))
-        print(str(args.week) + ";" + str(args.league_id) + "_" + str(item['owner_id']) + ";" + str(args.league_id) + ";" + str(item['owner_id']) + ";" + str(item['roster_id']) + ";" + str(item['settings']['wins'],) + "-" + str(item['settings']['losses']) + "-" + str(item['settings']['ties']) + ";" + str(item['settings']['fpts']) + ";" + team_record)
+        print(str(args.week) + ";" + str(args.league_id) + "_" + str(item['owner_id']) + ";" + str(args.league_id) + ";" + str(item['owner_id']) + ";" + str(item['roster_id']) + ";" + str(item['settings']['wins'],) + ";" + str(item['settings']['losses']) + ";" + str(item['settings']['ties']) + ";" + str(item['settings']['fpts']) + ";" + team_record)
 
 
 try:

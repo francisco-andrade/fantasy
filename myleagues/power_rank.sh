@@ -25,7 +25,7 @@ echo "Starting script"
 
 while read league; do
   if [[ $OPTION == "users" ]]; then
-      FILENAME=./data/users/${league}_users
+      FILENAME=./data/${league}_users
       if [[ ! -e ${FILENAME}.json ]]; then
           echo "Getting League $league users..."
           curl  https://api.sleeper.app/v1/league/${league}/users -s > ${FILENAME}.json
@@ -35,7 +35,7 @@ while read league; do
       echo "Users CSV: ./data/users.csv"
   fi
   if [[ $OPTION == "power" ]]; then
-      FILENAME=./data/rosters/${league}_rosters_week$WEEK
+      FILENAME=./data/${league}_rosters_week$WEEK
       if [[ ! -e ${FILENAME}.json ]]; then
           echo "Getting League $league rosters..."
           curl  https://api.sleeper.app/v1/league/${league}/rosters -s > ${FILENAME}.json
