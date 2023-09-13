@@ -12,7 +12,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--report", help="report", default="power")
 parser.add_argument("--league_id", help="league_id", default="1")
 parser.add_argument("--week", help="week", default="1")
-parser.add_argument("--debug", help="debug", default="true")
+parser.add_argument("--debug", help="debug", default="false")
 args = parser.parse_args()
 
 def print_power(rosters, week):
@@ -56,7 +56,7 @@ def print_power(rosters, week):
         weeks_total = counting_weeks - bye_week
         team_recent_avg_points = points_counter / weeks_total
         team_record = str("%02d" % ((roster['settings']['wins']/(roster['settings']['wins']+roster['settings']['losses'])*100),))
-        print(str(week) + ";" + str(args.league_id) + "_" + str(roster['owner_id']) + ";" + str(args.league_id) + ";" + str(roster['owner_id']) + ";" + str(roster['roster_id']) + ";\'" + str(roster['settings']['wins'],) + "-" + str(roster['settings']['losses']) + "-" + str(roster['settings']['ties']) + ";" + str(roster['settings']['fpts']) + ";" + str(team_record) + ";" + str("%.2f" % team_recent_avg_points) + ";" + week_values[:-1])
+        print(str(week) + ";" + str(args.league_id) + "_" + str(roster['owner_id']) + ";" + str(args.league_id) + ";" + str(roster['owner_id']) + ";" + str(roster['roster_id']) + ";" + str(roster['settings']['wins'],) + ";" + str(roster['settings']['losses']) + ";" + str(roster['settings']['ties']) + ";" + str(roster['settings']['fpts']) + ";" + str(team_record) + ";" + str("%.2f" % team_recent_avg_points) + ";" + week_values[:-1])
 
 def print_users(users):
     for user in users:
